@@ -223,6 +223,8 @@ public class Ukcp{
                 throw new IOException("Mismatch cmd");
             case -4:
                 throw new IOException("Conv inconsistency");
+            case -5:
+                throw new IOException("Unknown kcp version");
             default:
                 break;
         }

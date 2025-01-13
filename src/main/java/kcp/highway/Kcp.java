@@ -8,6 +8,7 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.util.Recycler;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
+import net.openhft.hashing.LongHashFunction;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -76,8 +77,12 @@ public class Kcp implements IKcp {
     public static final int IKCP_MTU_DEF = 1400;
 
     public static final int IKCP_INTERVAL = 100;
+    public static final int IKCP_BASE_OVERHEAD = 28;
+    public static final int IKCP_EXTRA_OVERHEAD_DEFAULT = 0;
+    public static final int IKCP_EXTRA_OVERHEAD_HOYO_V1 = 4;
+    public static final int IKCP_OVERHEAD_HOYO_V1 = IKCP_BASE_OVERHEAD+IKCP_EXTRA_OVERHEAD_HOYO_V1;
 
-    public int IKCP_OVERHEAD = 28;
+    public int IKCP_OVERHEAD = IKCP_BASE_OVERHEAD + IKCP_EXTRA_OVERHEAD_DEFAULT;
 
     public static final int IKCP_DEADLINK = 20;
 
@@ -195,6 +200,8 @@ public class Kcp implements IKcp {
     private long ackMask;
     private long lastRcvNxt;
 
+    private KcpVersion kcpVersion = KcpVersion.KCP_UNKNOWN;
+
     private static long long2Uint(long n) {
         return n & 0x00000000FFFFFFFFL;
     }
@@ -217,7 +224,7 @@ public class Kcp implements IKcp {
         kcp.output.out(data, kcp);
     }
 
-    private static int encodeSeg(ByteBuf buf, Segment seg) {
+    private static int encodeSeg(ByteBuf buf, Segment seg, KcpVersion kcpVersion) {
         int offset = buf.writerIndex();
 
         buf.writeLong(seg.conv);
@@ -242,6 +249,9 @@ public class Kcp implements IKcp {
             case 64:
                 buf.writeLongLE(seg.ackMask);
                 break;
+        }
+        if(kcpVersion.hasCheckCode()) {
+            buf.writeIntLE(seg.byte_check_code);
         }
         Snmp.snmp.OutSegs.increment();
         return buf.writerIndex() - offset;
@@ -700,6 +710,35 @@ public class Kcp implements IKcp {
     }
 
 
+    private KcpVersion determineKcpVersion(ByteBuf buf, int dataLen){
+        int remainingAfter = buf.readableBytes() - dataLen;
+        // if there are no other packets afterwards, this is enough to determine the version
+        switch (remainingAfter){
+            case IKCP_EXTRA_OVERHEAD_DEFAULT:
+                return KcpVersion.KCP_BASE;
+            case IKCP_EXTRA_OVERHEAD_HOYO_V1:
+                return KcpVersion.KCP_HOYO_V1;
+        }
+
+        // the remaining data is not enough for another kcp packet behind it, so it's likely an unknown version or broken packet
+        if(remainingAfter < IKCP_OVERHEAD){
+            return KcpVersion.KCP_UNKNOWN;
+        }
+
+        // since data could end with the convId by coincidence we start with the biggest known overhead and go smaller from there
+        int dataEndBaseIndex = buf.readerIndex()+dataLen;
+        long convId = buf.getLong(dataEndBaseIndex+ IKCP_EXTRA_OVERHEAD_HOYO_V1);
+        if(convId == conv) {
+            return KcpVersion.KCP_HOYO_V1;
+        }
+
+        convId = buf.getLong(dataEndBaseIndex+ IKCP_EXTRA_OVERHEAD_DEFAULT);
+        if(convId == conv){
+            return KcpVersion.KCP_BASE;
+        }
+        // we couldn't determine the version, so it's likely an unknown version or broken packet
+        return KcpVersion.KCP_UNKNOWN;
+    }
 
 
     @Override
@@ -727,6 +766,7 @@ public class Kcp implements IKcp {
             byte cmd;
             short frg;
             Segment seg;
+            int byte_check_code = 0;
 
             if (data.readableBytes() < IKCP_OVERHEAD) {
                 break;
@@ -758,6 +798,18 @@ public class Kcp implements IKcp {
 
             if (data.readableBytes() < len || len < 0) {
                 return -2;
+            }
+
+            if(kcpVersion == KcpVersion.KCP_UNKNOWN) {
+                kcpVersion = determineKcpVersion(data, len);
+            }
+
+            if(kcpVersion == KcpVersion.KCP_UNKNOWN){
+                return -5;
+            }
+
+            if(kcpVersion.hasCheckCode()){
+                byte_check_code = data.readIntLE();
             }
 
             if (cmd != IKCP_CMD_PUSH && cmd != IKCP_CMD_ACK && cmd != IKCP_CMD_WASK && cmd != IKCP_CMD_WINS) {
@@ -808,6 +860,7 @@ public class Kcp implements IKcp {
                             seg.ts = ts;
                             seg.sn = sn;
                             seg.una = una;
+                            seg.byte_check_code = byte_check_code;
                             repeat = parseData(seg);
                         }
                     }
@@ -991,7 +1044,7 @@ public class Kcp implements IKcp {
                 buffer =  makeSpace(buffer,IKCP_OVERHEAD);
                 seg.sn = sn;
                 seg.ts = acklist[i * 2 + 1];
-                encodeSeg(buffer, seg);
+                encodeSeg(buffer, seg, kcpVersion);
 
                 if (log.isDebugEnabled()) {
                     log.debug("{} flush ack: sn={}, ts={} ,count={}", this, seg.sn, seg.ts,count);
@@ -1036,7 +1089,7 @@ public class Kcp implements IKcp {
         if ((probe & IKCP_ASK_SEND) != 0) {
             seg.cmd = IKCP_CMD_WASK;
             buffer = makeSpace(buffer,IKCP_OVERHEAD);
-            encodeSeg(buffer, seg);
+            encodeSeg(buffer, seg, kcpVersion);
             if (log.isDebugEnabled()) {
                 log.debug("{} flush ask", this);
             }
@@ -1046,7 +1099,7 @@ public class Kcp implements IKcp {
         if ((probe & IKCP_ASK_TELL) != 0) {
             seg.cmd = IKCP_CMD_WINS;
             buffer = makeSpace(buffer,IKCP_OVERHEAD);
-            encodeSeg(buffer, seg);
+            encodeSeg(buffer, seg, kcpVersion);
             if (log.isDebugEnabled()) {
                 log.debug("{} flush tell: wnd={}", this, seg.wnd);
             }
@@ -1070,6 +1123,8 @@ public class Kcp implements IKcp {
             newSeg.conv = conv;
             newSeg.cmd = IKCP_CMD_PUSH;
             newSeg.sn = sndNxt;
+            LongHashFunction xxh3 = LongHashFunction.xx3();
+            newSeg.byte_check_code = (int) xxh3.hashBytes(newSeg.data.nioBuffer());
             sndBuf.add(newSeg);
             sndNxt++;
             newSegsCount++;
@@ -1145,7 +1200,7 @@ public class Kcp implements IKcp {
                 int segLen = segData.readableBytes();
                 int need = IKCP_OVERHEAD + segLen;
                 buffer = makeSpace(buffer,need);
-                encodeSeg(buffer, segment);
+                encodeSeg(buffer, segment, kcpVersion);
 
                 if (segLen > 0) {
                     // don't increases data's readerIndex, because the data may be resend.
@@ -1503,6 +1558,26 @@ public class Kcp implements IKcp {
                 ')';
     }
 
+    public enum KcpVersion {
+        KCP_BASE(IKCP_BASE_OVERHEAD, false),
+        KCP_HOYO_V1(IKCP_OVERHEAD_HOYO_V1, true),
+        KCP_UNKNOWN(-1, false);
+        private final int overhead;
+        private final boolean hasCheckCode;
+
+        KcpVersion(int overhead, boolean hasCheckCode){
+            this.overhead = overhead;
+            this.hasCheckCode = hasCheckCode;
+        }
+
+        public int getOverhead(){
+            return overhead;
+        }
+
+        public boolean hasCheckCode(){
+            return hasCheckCode;
+        }
+    }
 
     public static class Segment {
 
@@ -1530,6 +1605,8 @@ public class Kcp implements IKcp {
         private int fastack;
         /***发送分片的次数，每发送一次加一**/
         private int xmit;
+
+        private int byte_check_code;
 
         private long ackMask;
 
@@ -1562,6 +1639,7 @@ public class Kcp implements IKcp {
             fastack = 0;
             xmit = 0;
             ackMask=0;
+            byte_check_code = 0;
             if (releaseBuf&&data!=null) {
                 data.release();
             }
