@@ -69,7 +69,7 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
     transient int modCount;
 
     /**
-     * Constructs an empty <tt>HashMap</tt> with the specified initial
+     * Constructs an empty <code>HashMap</code> with the specified initial
      * capacity and load factor.
      *
      * @param initialCapacity the initial capacity
@@ -96,7 +96,7 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * Constructs an empty <tt>HashMap</tt> with the specified initial
+     * Constructs an empty <code>HashMap</code> with the specified initial
      * capacity and the default load factor (0.75).
      *
      * @param initialCapacity the initial capacity.
@@ -107,7 +107,7 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * Constructs an empty <tt>HashMap</tt> with the default initial capacity
+     * Constructs an empty <code>HashMap</code> with the default initial capacity
      * (16) and the default load factor (0.75).
      */
     public ReItrHashMap() {
@@ -115,10 +115,10 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * Constructs a new <tt>HashMap</tt> with the same mappings as the
-     * specified <tt>Map</tt>.  The <tt>HashMap</tt> is created with
+     * Constructs a new <code>HashMap</code> with the same mappings as the
+     * specified <code>Map</code>.  The <code>HashMap</code> is created with
      * default load factor (0.75) and an initial capacity sufficient to
-     * hold the mappings in the specified <tt>Map</tt>.
+     * hold the mappings in the specified <code>Map</code>.
      *
      * @param m the map whose mappings are to be placed in this map
      * @throws NullPointerException if the specified map is null
@@ -197,9 +197,9 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * Returns <tt>true</tt> if this map contains no key-value mappings.
+     * Returns <code>true</code> if this map contains no key-value mappings.
      *
-     * @return <tt>true</tt> if this map contains no key-value mappings
+     * @return <code>true</code> if this map contains no key-value mappings
      */
     @Override
     public boolean isEmpty() {
@@ -253,11 +253,11 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * Returns <tt>true</tt> if this map contains a mapping for the
+     * Returns <code>true</code> if this map contains a mapping for the
      * specified key.
      *
      * @param key The key whose presence in this map is to be tested
-     * @return <tt>true</tt> if this map contains a mapping for the specified
+     * @return <code>true</code> if this map contains a mapping for the specified
      * key.
      */
     @Override
@@ -295,10 +295,10 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
      *
      * @param key   key with which the specified value is to be associated
      * @param value value to be associated with the specified key
-     * @return the previous value associated with <tt>key</tt>, or
-     * <tt>null</tt> if there was no mapping for <tt>key</tt>.
-     * (A <tt>null</tt> return can also indicate that the map
-     * previously associated <tt>null</tt> with <tt>key</tt>.)
+     * @return the previous value associated with <code>key</code>, or
+     * <code>null</code> if there was no mapping for <code>key</code>.
+     * (A <code>null</code> return can also indicate that the map
+     * previously associated <code>null</code> with <code>key</code>.)
      */
     @Override
     public V put(K key, V value) {
@@ -470,10 +470,10 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
      * Removes the mapping for the specified key from this map if present.
      *
      * @param key key whose mapping is to be removed from the map
-     * @return the previous value associated with <tt>key</tt>, or
-     * <tt>null</tt> if there was no mapping for <tt>key</tt>.
-     * (A <tt>null</tt> return can also indicate that the map
-     * previously associated <tt>null</tt> with <tt>key</tt>.)
+     * @return the previous value associated with <code>key</code>, or
+     * <code>null</code> if there was no mapping for <code>key</code>.
+     * (A <code>null</code> return can also indicate that the map
+     * previously associated <code>null</code> with <code>key</code>.)
      */
     @Override
     public V remove(Object key) {
@@ -565,11 +565,11 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * Returns <tt>true</tt> if this map maps one or more keys to the
+     * Returns <code>true</code> if this map maps one or more keys to the
      * specified value.
      *
      * @param value value whose presence in this map is to be tested
-     * @return <tt>true</tt> if this map maps one or more keys to the
+     * @return <code>true</code> if this map maps one or more keys to the
      * specified value
      */
     @Override
@@ -605,7 +605,7 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * Returns a shallow copy of this <tt>HashMap</tt> instance: the keys and
+     * Returns a shallow copy of this <code>HashMap</code> instance: the keys and
      * values themselves are not cloned.
      *
      * @return a shallow copy of this map
@@ -880,12 +880,12 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
      * The set is backed by the map, so changes to the map are
      * reflected in the set, and vice-versa.  If the map is modified
      * while an iteration over the set is in progress (except through
-     * the iterator's own <tt>remove</tt> operation), the results of
+     * the iterator's own <code>remove</code> operation), the results of
      * the iteration are undefined.  The set supports element removal,
      * which removes the corresponding mapping from the map, via the
-     * <tt>Iterator.remove</tt>, <tt>Set.remove</tt>,
-     * <tt>removeAll</tt>, <tt>retainAll</tt>, and <tt>clear</tt>
-     * operations.  It does not support the <tt>add</tt> or <tt>addAll</tt>
+     * <code>Iterator.remove</code>, <code>Set.remove</code>,
+     * <code>removeAll</code>, <code>retainAll</code>, and <code>clear</code>
+     * operations.  It does not support the <code>add</code> or <code>addAll</code>
      * operations.
      */
     @Override
@@ -926,13 +926,13 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
      * The collection is backed by the map, so changes to the map are
      * reflected in the collection, and vice-versa.  If the map is
      * modified while an iteration over the collection is in progress
-     * (except through the iterator's own <tt>remove</tt> operation),
+     * (except through the iterator's own <code>remove</code> operation),
      * the results of the iteration are undefined.  The collection
      * supports element removal, which removes the corresponding
-     * mapping from the map, via the <tt>Iterator.remove</tt>,
-     * <tt>Collection.remove</tt>, <tt>removeAll</tt>,
-     * <tt>retainAll</tt> and <tt>clear</tt> operations.  It does not
-     * support the <tt>add</tt> or <tt>addAll</tt> operations.
+     * mapping from the map, via the <code>Iterator.remove</code>,
+     * <code>Collection.remove</code>, <code>removeAll</code>,
+     * <code>retainAll</code> and <code>clear</code> operations.  It does not
+     * support the <code>add</code> or <code>addAll</code> operations.
      */
     @Override
     public Collection<V> values() {
@@ -967,14 +967,14 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
      * The set is backed by the map, so changes to the map are
      * reflected in the set, and vice-versa.  If the map is modified
      * while an iteration over the set is in progress (except through
-     * the iterator's own <tt>remove</tt> operation, or through the
-     * <tt>setValue</tt> operation on a map entry returned by the
+     * the iterator's own <code>remove</code> operation, or through the
+     * <code>setValue</code> operation on a map entry returned by the
      * iterator) the results of the iteration are undefined.  The set
      * supports element removal, which removes the corresponding
-     * mapping from the map, via the <tt>Iterator.remove</tt>,
-     * <tt>Set.remove</tt>, <tt>removeAll</tt>, <tt>retainAll</tt> and
-     * <tt>clear</tt> operations.  It does not support the
-     * <tt>add</tt> or <tt>addAll</tt> operations.
+     * mapping from the map, via the <code>Iterator.remove</code>,
+     * <code>Set.remove</code>, <code>removeAll</code>, <code>retainAll</code> and
+     * <code>clear</code> operations.  It does not support the
+     * <code>add</code> or <code>addAll</code> operations.
      *
      * @return a set view of the mappings contained in this map
      */
@@ -1021,7 +1021,7 @@ public class ReItrHashMap<K, V> extends AbstractMap<K, V>
     }
 
     /**
-     * Save the state of the <tt>HashMap</tt> instance to a stream (i.e.,
+     * Save the state of the <code>HashMap</code> instance to a stream (i.e.,
      * serialize it).
      *
      * @serialData The <i>capacity</i> of the HashMap (the length of the

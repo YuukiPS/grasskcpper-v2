@@ -25,8 +25,8 @@ import org.jctools.util.InternalAPI;
  *     <li> <code>consumerIndex > producerIndex</code> : due to counter overflow (unlikey with longs, but easy to reason)
  *     <li> <code>consumerIndex > producerIndex</code> : due to consumer FastFlow like implementation discovering the
  *     element before the counter is updated.
- *     <li> <code>producerIndex - consumerIndex < 0</code> : due to above.
- *     <li> <code>producerIndex - consumerIndex > Integer.MAX_VALUE</code> : as linked buffers allow constructing queues
+ *     <li> <code>producerIndex - consumerIndex &lt; 0</code> : due to above.
+ *     <li> <code>producerIndex - consumerIndex &gt; Integer.MAX_VALUE</code> : as linked buffers allow constructing queues
  *     with more than <code>Integer.MAX_VALUE</code> elements.
  *
  * </ul>

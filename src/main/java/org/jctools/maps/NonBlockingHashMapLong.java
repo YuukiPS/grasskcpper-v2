@@ -49,18 +49,18 @@ import static org.jctools.util.UnsafeAccess.fieldOffset;
  *
  * <p>This class obeys the same functional specification as {@link
  * java.util.Hashtable}, and includes versions of methods corresponding to
- * each method of <tt>Hashtable</tt>.  However, even though all operations are
+ * each method of <code>Hashtable</code>.  However, even though all operations are
  * thread-safe, operations do <em>not</em> entail locking and there is
  * <em>not</em> any support for locking the entire table in a way that
  * prevents all access.  This class is fully interoperable with
- * <tt>Hashtable</tt> in programs that rely on its thread safety but not on
+ * <code>Hashtable</code> in programs that rely on its thread safety but not on
  * its synchronization details.
  *
- * <p> Operations (including <tt>put</tt>) generally do not block, so may
- * overlap with other update operations (including other <tt>puts</tt> and
- * <tt>removes</tt>).  Retrievals reflect the results of the most recently
+ * <p> Operations (including <code>put</code>) generally do not block, so may
+ * overlap with other update operations (including other <code>puts</code> and
+ * <code>removes</code>).  Retrievals reflect the results of the most recently
  * <em>completed</em> update operations holding upon their onset.  For
- * aggregate operations such as <tt>putAll</tt>, concurrent retrievals may
+ * aggregate operations such as <code>putAll</code>, concurrent retrievals may
  * reflect insertion or removal of only some entries.  Similarly, Iterators
  * and Enumerations return elements reflecting the state of the hash table at
  * some point at or since the creation of the iterator/enumeration.  They do
@@ -81,7 +81,7 @@ import static org.jctools.util.UnsafeAccess.fieldOffset;
  * interfaces.
  *
  * <p> Like {@link Hashtable} but unlike {@link HashMap}, this class
- * does <em>not</em> allow <tt>null</tt> to be used as a value.
+ * does <em>not</em> allow <code>null</code> to be used as a value.
  *
  *
  * @since 1.5
@@ -247,7 +247,7 @@ public class NonBlockingHashMapLong<TypeV>
    *  @return the number of key-value mappings in this map */
   public int     size       ( )                     { return (_val_1==TOMBSTONE?0:1) + _chm.size(); }
   /** Tests if the key in the table.
-   * @return <tt>true</tt> if the key is in the table */
+   * @return <code>true</code> if the key is in the table */
   public boolean containsKey( long key )            { return get(key) != null; }
 
   /** Legacy method testing if some key maps into the specified value in this
@@ -256,7 +256,7 @@ public class NonBlockingHashMapLong<TypeV>
    *  class {@link java.util.Hashtable}, which supported this method prior to
    *  introduction of the Java Collections framework.
    *  @param  val a value to search for
-   *  @return <tt>true</tt> if this map maps one or more keys to the specified value
+   *  @return <code>true</code> if this map maps one or more keys to the specified value
    *  @throws NullPointerException if the specified value is null */
   public boolean contains   ( Object val )          { return containsValue(val); }
 
@@ -265,8 +265,8 @@ public class NonBlockingHashMapLong<TypeV>
    *  with a key that is equal to the original key.
    *  @param key key with which the specified value is to be associated
    *  @param val value to be associated with the specified key
-   *  @return the previous value associated with <tt>key</tt>, or
-   *          <tt>null</tt> if there was no mapping for <tt>key</tt>
+   *  @return the previous value associated with <code>key</code>, or
+   *          <code>null</code> if there was no mapping for <code>key</code>
    *  @throws NullPointerException if the specified value is null  */
   public TypeV   put        ( long key, TypeV val ) { return putIfMatch( key,      val,NO_MATCH_OLD);}
 
@@ -274,14 +274,14 @@ public class NonBlockingHashMapLong<TypeV>
    *  Useful to ensure that only a single mapping for the key exists, even if
    *  many threads are trying to create the mapping in parallel.
    *  @return the previous value associated with the specified key,
-   *         or <tt>null</tt> if there was no mapping for the key
+   *         or <code>null</code> if there was no mapping for the key
    *  @throws NullPointerException if the specified is value is null  */
   public TypeV   putIfAbsent( long key, TypeV val ) { return putIfMatch( key,      val,TOMBSTONE   );}
 
   /** Removes the key (and its corresponding value) from this map.
     * This method does nothing if the key is not in the map.
-    * @return the previous value associated with <tt>key</tt>, or
-    *         <tt>null</tt> if there was no mapping for <tt>key</tt>*/
+    * @return the previous value associated with <code>key</code>, or
+    *         <code>null</code> if there was no mapping for <code>key</code>*/
   public TypeV   remove     ( long key )            { return putIfMatch( key,TOMBSTONE,NO_MATCH_OLD);}
 
   /** Atomically do a {@link #remove(long)} if-and-only-if the key is mapped
@@ -327,11 +327,11 @@ public class NonBlockingHashMapLong<TypeV>
     CAS(_val_1_offset,_val_1,TOMBSTONE);
   }
 
-  /** Returns <tt>true</tt> if this Map maps one or more keys to the specified
+  /** Returns <code>true</code> if this Map maps one or more keys to the specified
    *  value.  <em>Note</em>: This method requires a full internal traversal of the
    *  hash table and is much slower than {@link #containsKey}.
    *  @param val value whose presence in this map is to be tested
-   *  @return <tt>true</tt> if this Map maps one or more keys to the specified value
+   *  @return <code>true</code> if this Map maps one or more keys to the specified value
    *  @throws NullPointerException if the specified value is null */
   public boolean containsValue( Object val ) {
     if( val == null ) return false;
@@ -1067,11 +1067,11 @@ public class NonBlockingHashMapLong<TypeV>
    *  The collection is backed by the map, so changes to the map are reflected
    *  in the collection, and vice-versa.  The collection supports element
    *  removal, which removes the corresponding mapping from this map, via the
-   *  <tt>Iterator.remove</tt>, <tt>Collection.remove</tt>,
-   *  <tt>removeAll</tt>, <tt>retainAll</tt>, and <tt>clear</tt> operations.
-   *  It does not support the <tt>add</tt> or <tt>addAll</tt> operations.
+   *  <code>Iterator.remove</code>, <code>Collection.remove</code>,
+   *  <code>removeAll</code>, <code>retainAll</code>, and <code>clear</code> operations.
+   *  It does not support the <code>add</code> or <code>addAll</code> operations.
    *
-   *  <p>The view's <tt>iterator</tt> is a "weakly consistent" iterator that
+   *  <p>The view's <code>iterator</code> is a "weakly consistent" iterator that
    *  will never throw {@link ConcurrentModificationException}, and guarantees
    *  to traverse elements as they existed upon construction of the iterator,
    *  and may (but is not guaranteed to) reflect any modifications subsequent
@@ -1117,11 +1117,11 @@ public class NonBlockingHashMapLong<TypeV>
    *  set is backed by the map, so changes to the map are reflected in the
    *  set, and vice-versa.  The set supports element removal, which removes
    *  the corresponding mapping from this map, via the
-   *  <tt>Iterator.remove</tt>, <tt>Set.remove</tt>, <tt>removeAll</tt>,
-   *  <tt>retainAll</tt>, and <tt>clear</tt> operations.  It does not support
-   *  the <tt>add</tt> or <tt>addAll</tt> operations.
+   *  <code>Iterator.remove</code>, <code>Set.remove</code>, <code>removeAll</code>,
+   *  <code>retainAll</code>, and <code>clear</code> operations.  It does not support
+   *  the <code>add</code> or <code>addAll</code> operations.
    *
-   *  <p>The view's <tt>iterator</tt> is a "weakly consistent" iterator that
+   *  <p>The view's <code>iterator</code> is a "weakly consistent" iterator that
    *  will never throw {@link ConcurrentModificationException}, and guarantees
    *  to traverse elements as they existed upon construction of the iterator,
    *  and may (but is not guaranteed to) reflect any modifications subsequent
@@ -1173,11 +1173,11 @@ public class NonBlockingHashMapLong<TypeV>
    *  set is backed by the map, so changes to the map are reflected in the
    *  set, and vice-versa.  The set supports element removal, which removes
    *  the corresponding mapping from the map, via the
-   *  <tt>Iterator.remove</tt>, <tt>Set.remove</tt>, <tt>removeAll</tt>,
-   *  <tt>retainAll</tt>, and <tt>clear</tt> operations.  It does not support
-   *  the <tt>add</tt> or <tt>addAll</tt> operations.
+   *  <code>Iterator.remove</code>, <code>Set.remove</code>, <code>removeAll</code>,
+   *  <code>retainAll</code>, and <code>clear</code> operations.  It does not support
+   *  the <code>add</code> or <code>addAll</code> operations.
    *
-   *  <p>The view's <tt>iterator</tt> is a "weakly consistent" iterator
+   *  <p>The view's <code>iterator</code> is a "weakly consistent" iterator
    *  that will never throw {@link ConcurrentModificationException},
    *  and guarantees to traverse elements as they existed upon
    *  construction of the iterator, and may (but is not guaranteed to)

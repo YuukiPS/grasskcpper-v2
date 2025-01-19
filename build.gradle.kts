@@ -7,6 +7,8 @@ version = "0.1"
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+    withJavadocJar()
 }
 repositories {
     mavenCentral()
@@ -23,9 +25,9 @@ publishing {
             artifactId = "grasskcpper"
             //from components.java
             pom {
-                name = "Grasscutter"
-                description = "A server software reimplementation for an anime game."
-                url = "https://github.com/Grasscutters/Grasscutter"
+                name = "grasskcpper"
+                description = "A kcp library built for a certain cute game."
+                url = "https://github.com/Hartie95/grasskcpper"
                 licenses {
                     license {
                         name = "The Apache License, Version 2.0"

@@ -33,18 +33,18 @@ public class NonBlockingHashSet<E> extends AbstractSet<E> implements Serializabl
   public NonBlockingHashSet() { super(); _map = new NonBlockingHashMap<E,Object>(); }
 
   /** Add {@code o} to the set.  
-   *  @return <tt>true</tt> if {@code o} was added to the set, <tt>false</tt>
+   *  @return <code>true</code> if {@code o} was added to the set, <code>false</code>
    *  if {@code o} was already in the set.  */
   public boolean add( final E o ) { return _map.putIfAbsent(o,V) == null; }
 
-  /**  @return <tt>true</tt> if {@code o} is in the set.  */
+  /**  @return <code>true</code> if {@code o} is in the set.  */
   public boolean contains   ( final Object     o ) { return _map.containsKey(o); }
 
   /**  @return Returns the match for {@code o} if {@code o} is in the set.  */
   public E get( final E o ) { return _map.getk(o); }
 
   /** Remove {@code o} from the set.  
-   * @return <tt>true</tt> if {@code o} was removed to the set, <tt>false</tt>
+   * @return <code>true</code> if {@code o} was removed to the set, <code>false</code>
    * if {@code o} was not in the set.
    */
   public boolean remove( final Object o ) { return _map.remove(o) == V; }

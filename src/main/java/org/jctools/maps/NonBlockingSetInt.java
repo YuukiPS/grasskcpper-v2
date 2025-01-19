@@ -72,7 +72,7 @@ public class NonBlockingSetInt extends AbstractSet<Integer> implements Serializa
    * requires auto-unboxing.  When possible use the {@code int} version of
    * {@link #add(int)} for efficiency.
    * @throws IllegalArgumentException if i is negative.
-   * @return <tt>true</tt> if i was added to the set.
+   * @return <code>true</code> if i was added to the set.
    */
   public boolean add ( final Integer i ) {
     return add(i.intValue());
@@ -82,7 +82,7 @@ public class NonBlockingSetInt extends AbstractSet<Integer> implements Serializa
    * version of contains, requires a type-check and auto-unboxing.  When
    * possible use the {@code int} version of {@link #contains(int)} for
    * efficiency.
-   * @return <tt>true</tt> if i was in the set.
+   * @return <code>true</code> if i was in the set.
    */
   public boolean contains( final Object  o ) {
     return o instanceof Integer && contains(((Integer) o).intValue());
@@ -92,7 +92,7 @@ public class NonBlockingSetInt extends AbstractSet<Integer> implements Serializa
    * version of remove, requires a type-check and auto-unboxing.  When
    * possible use the {@code int} version of {@link #remove(int)} for
    * efficiency.
-   * @return <tt>true</tt> if i was removed to the set.
+   * @return <code>true</code> if i was removed to the set.
    */
   public boolean remove( final Object  o ) {
     return o instanceof Integer && remove(((Integer) o).intValue());
@@ -103,7 +103,7 @@ public class NonBlockingSetInt extends AbstractSet<Integer> implements Serializa
    * of {@link #add} - no autoboxing.  Negative values throw
    * IllegalArgumentException.
    * @throws IllegalArgumentException if i is negative.
-   * @return <tt>true</tt> if i was added to the set.
+   * @return <code>true</code> if i was added to the set.
    */
   public boolean add( final int i ) {
     RangeUtil.checkPositiveOrZero(i, "i");
@@ -112,13 +112,13 @@ public class NonBlockingSetInt extends AbstractSet<Integer> implements Serializa
   /**
    * Test if {@code i} is in the set.  This is the lower-case '{@code int}'
    * version of {@link #contains} - no autoboxing.
-   * @return <tt>true</tt> if i was int the set.
+   * @return <code>true</code> if i was int the set.
    */
   public boolean contains( final int i ) { return i >= 0 && _nbsi.contains(i); }
   /**
    * Remove {@code i} from the set.  This is the fast lower-case '{@code int}'
    * version of {@link #remove} - no autoboxing.
-   * @return <tt>true</tt> if i was added to the set.
+   * @return <code>true</code> if i was added to the set.
    */
   public boolean remove  ( final int i ) { return i >= 0 && _nbsi.remove(i); }
 
