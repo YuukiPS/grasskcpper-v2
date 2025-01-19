@@ -6,7 +6,19 @@ A kcp library built for a certain cute game
 * Kcp version detection support
 
 ### How to add it to your project
-Add this to your dependencies in the gradle build file:
+Add the AnimeGameServers maven repo to your build file:
+```gradle
+repositories {
+    ...
+    maven {
+        name = "ags-mvn-Releases"
+        url = uri("https://mvn.animegameservers.org/releases")
+    }
+}
+```
+
+Then add this to your dependencies in the gradle build file:
+
 ```gradle
 implementation "org.anime_game_servers:grasskcpper:0.1"
 ```
