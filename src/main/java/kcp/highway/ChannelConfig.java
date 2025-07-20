@@ -44,6 +44,10 @@ public class ChannelConfig {
      **/
     private boolean useConvChannel = false;
     /**
+     * 启用Proxy Protocol v2支持，用于从FRP等代理服务器获取原始客户端IP
+     **/
+    private boolean proxyProtocolV2Enabled = true;
+    /**
      * 处理kcp消息接收和发送的线程池
      **/
     private IMessageExecutorPool iMessageExecutorPool = new NettyMessageExecutorPool(Runtime.getRuntime().availableProcessors());
@@ -193,5 +197,13 @@ public class ChannelConfig {
 
     public void setUseConvChannel(boolean useConvChannel) {
         this.useConvChannel = useConvChannel;
+    }
+
+    public boolean isProxyProtocolV2Enabled() {
+        return proxyProtocolV2Enabled;
+    }
+
+    public void setProxyProtocolV2Enabled(boolean proxyProtocolV2Enabled) {
+        this.proxyProtocolV2Enabled = proxyProtocolV2Enabled;
     }
 }

@@ -1178,4 +1178,18 @@ public class ReItrLinkedList<E> extends AbstractSequentialList<E>
         }
     }
 
+    /**
+     * Returns a reverse-ordered view of this collection.
+     * This method resolves the conflict between List&lt;E&gt; and Deque&lt;E&gt; interfaces
+     * that both define reversed() with different return types.
+     */
+    @Override
+    public ReItrLinkedList<E> reversed() {
+        ReItrLinkedList<E> reversed = new ReItrLinkedList<>();
+        for (Node<E> x = last; x != null; x = x.prev) {
+            reversed.add(x.item);
+        }
+        return reversed;
+    }
+
 }

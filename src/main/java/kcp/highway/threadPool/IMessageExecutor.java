@@ -25,4 +25,12 @@ public interface IMessageExecutor{
 	 * @param iTask
 	 */
 	void execute(ITask iTask);
+
+	/**
+	 * 检查执行器是否仍然活跃并可以接受任务
+	 * @return true if the executor can accept tasks, false otherwise
+	 */
+	default boolean isActive() {
+		return true; // Default implementation for backward compatibility
+	}
 }

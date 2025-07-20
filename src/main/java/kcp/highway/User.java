@@ -11,7 +11,8 @@ import java.net.InetSocketAddress;
 public class User {
 
     private Channel channel;
-    private InetSocketAddress remoteAddress;
+    private InetSocketAddress remoteAddress;  // Address to send responses to (proxy or direct client)
+    private InetSocketAddress originalClientAddress;  // Original client address (for proxy scenarios)
     private InetSocketAddress localAddress;
 
     private Object cache;
@@ -27,6 +28,14 @@ public class User {
     public User(Channel channel, InetSocketAddress remoteAddress, InetSocketAddress localAddress) {
         this.channel = channel;
         this.remoteAddress = remoteAddress;
+        this.originalClientAddress = remoteAddress;  // Default: same as remote address
+        this.localAddress = localAddress;
+    }
+    
+    public User(Channel channel, InetSocketAddress remoteAddress, InetSocketAddress originalClientAddress, InetSocketAddress localAddress) {
+        this.channel = channel;
+        this.remoteAddress = remoteAddress;
+        this.originalClientAddress = originalClientAddress;
         this.localAddress = localAddress;
     }
 
@@ -44,6 +53,14 @@ public class User {
 
     protected void setRemoteAddress(InetSocketAddress remoteAddress) {
         this.remoteAddress = remoteAddress;
+    }
+    
+    public InetSocketAddress getOriginalClientAddress() {
+        return originalClientAddress;
+    }
+    
+    protected void setOriginalClientAddress(InetSocketAddress originalClientAddress) {
+        this.originalClientAddress = originalClientAddress;
     }
 
     protected InetSocketAddress getLocalAddress() {

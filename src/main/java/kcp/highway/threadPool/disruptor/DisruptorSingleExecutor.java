@@ -120,6 +120,11 @@ public class DisruptorSingleExecutor implements IMessageExecutor {
 
 	@Override
 	public void execute(ITask iTask){
+		if (istop.get()) {
+			throw new java.util.concurrent.RejectedExecutionException(
+				"DisruptorSingleExecutor has been stopped and cannot accept new tasks");
+		}
+		
 		Thread currentThread = Thread.currentThread();
 		//if(currentThread==this.currentThread){
 		//	iTask.execute();
@@ -133,5 +138,10 @@ public class DisruptorSingleExecutor implements IMessageExecutor {
 		DistriptorHandler testEvent = buffer.get(next);
 		testEvent.setTask(iTask);
 		buffer.publish(next);
+	}
+	
+	@Override
+	public boolean isActive() {
+		return !istop.get();
 	}
 }
