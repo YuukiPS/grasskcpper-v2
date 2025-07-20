@@ -201,17 +201,17 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter {
                 long convId = cleanPayload.getLong(0);
                 HandshakeWaiter waiter = handshakeWaitersFind(convId);
                 if (waiter == null) {
-                    logger.warn("Establishing handshake to {} failure, Conv id {} not found in waiters", user.getRemoteAddress(), convId);
+                    logger.warn("Establishing handshake to {} failure, Conv id {} not found in waiters", user.getOriginalClientAddress(), convId);
                     return;
                 } else {
                     logger.debug("Found handshake waiter for convId: {}, completing handshake for client: {}", convId, originalSender);
                     handshakeWaitersRemove(waiter);
                     int sn = getSn(cleanPayload, channelConfig);
                     if (sn != 0) {
-                        logger.warn("Establishing handshake to {} failure, SN!=0 (SN={})", user.getRemoteAddress(), sn);
+                        logger.warn("Establishing handshake to {} failure, SN!=0 (SN={})", user.getOriginalClientAddress(), sn);
                         return;
                     }
-                    logger.info("Established handshake to {} ,Conv convId={}", user.getRemoteAddress(), waiter.convId);
+                    logger.info("Established handshake to {} ,Conv convId={}", user.getOriginalClientAddress(), waiter.convId);
                     KcpOutput kcpOutput = new KcpOutPutImp();
                     Ukcp newUkcp = new Ukcp(kcpOutput, kcpListener, iMessageExecutor, channelConfig, channelManager);
                     newUkcp.user(user);

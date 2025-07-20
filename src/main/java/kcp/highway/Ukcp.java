@@ -401,7 +401,7 @@ public class Ukcp{
                 return --operand;
             });
             if(bufferSize==0){
-                //log.error("conv {} address {} writeBuffer is full",kcp.getConv(),((User)kcp.getUser()).getRemoteAddress());
+                //log.error("conv {} address {} writeBuffer is full",kcp.getConv(),((User)kcp.getUser()).getOriginalClientAddress());
                 return false;
             }
         }

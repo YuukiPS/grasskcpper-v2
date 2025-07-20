@@ -8,7 +8,8 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.util.Recycler;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
-import net.openhft.hashing.LongHashFunction;
+// Optional import - will be handled gracefully if not available
+// import net.openhft.hashing.LongHashFunction;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -23,6 +24,26 @@ import java.util.ListIterator;
 public class Kcp implements IKcp {
 
     private static final InternalLogger log = InternalLoggerFactory.getInstance(Kcp.class);
+    
+    // Check if hashing library is available
+    private static final boolean HASHING_AVAILABLE;
+    private static final Object HASH_FUNCTION;
+    
+    static {
+        boolean hashingAvailable = false;
+        Object hashFunction = null;
+        try {
+            Class<?> longHashFunctionClass = Class.forName("net.openhft.hashing.LongHashFunction");
+            java.lang.reflect.Method xx3Method = longHashFunctionClass.getMethod("xx3");
+            hashFunction = xx3Method.invoke(null);
+            hashingAvailable = true;
+            log.debug("Zero-allocation hashing library is available");
+        } catch (Exception e) {
+            log.info("Zero-allocation hashing library not available, byte check codes will be disabled: {}", e.getMessage());
+        }
+        HASHING_AVAILABLE = hashingAvailable;
+        HASH_FUNCTION = hashFunction;
+    }
 
     /**
      * no delay min rto
@@ -1123,8 +1144,21 @@ public class Kcp implements IKcp {
             newSeg.conv = conv;
             newSeg.cmd = IKCP_CMD_PUSH;
             newSeg.sn = sndNxt;
-            LongHashFunction xxh3 = LongHashFunction.xx3();
-            newSeg.byte_check_code = (int) xxh3.hashBytes(newSeg.data.nioBuffer());
+            
+            // Calculate byte check code if hashing is available
+            if (HASHING_AVAILABLE && HASH_FUNCTION != null) {
+                try {
+                    java.lang.reflect.Method hashBytesMethod = HASH_FUNCTION.getClass().getMethod("hashBytes", java.nio.ByteBuffer.class);
+                    long hash = (Long) hashBytesMethod.invoke(HASH_FUNCTION, newSeg.data.nioBuffer());
+                    newSeg.byte_check_code = (int) hash;
+                } catch (Exception e) {
+                    log.warn("Failed to calculate hash, using fallback: {}", e.getMessage());
+                    newSeg.byte_check_code = 0; // Fallback value
+                }
+            } else {
+                newSeg.byte_check_code = 0; // No hashing available
+            }
+            
             sndBuf.add(newSeg);
             sndNxt++;
             newSegsCount++;
